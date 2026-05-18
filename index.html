@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Wedding Coordination Planner</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    background:#f3f4f6;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    color:#111827;
+}
+
+.header{
+    background:#111827;
+    color:white;
+    padding:30px 20px;
+    text-align:center;
+}
+
+.header h1{
+    margin:0;
+    font-size:32px;
+}
+
+.header p{
+    margin-top:10px;
+    opacity:0.8;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.08);
+    margin-bottom:20px;
+}
+
+.section-title{
+    font-size:24px;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+.task{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:16px 0;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.task:last-child{
+    border-bottom:none;
+}
+
+.task-left{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.task-left input{
+    width:22px;
+    height:22px;
+}
+
+.task-name{
+    font-size:17px;
+    font-weight:500;
+}
+
+.task-price{
+    font-weight:700;
+    font-size:17px;
+}
+
+.total-box{
+    margin-top:25px;
+    background:#111827;
+    color:white;
+    border-radius:18px;
+    padding:25px;
+    text-align:center;
+}
+
+.total-box h2{
+    margin:0;
+    font-size:18px;
+    opacity:0.8;
+}
+
+.total{
+    font-size:42px;
+    font-weight:800;
+    margin-top:10px;
+}
+
+.button-group{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:20px;
+}
+
+button{
+    flex:1;
+    min-width:180px;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.primary{
+    background:#111827;
+    color:white;
+}
+
+.secondary{
+    background:#d1d5db;
+}
+
+.success{
+    background:#059669;
+    color:white;
+}
+
+.hidden{
+    display:none;
+}
+
+.invoice{
+    margin-top:20px;
+    padding:20px;
+    background:#fafafa;
+    border:1px solid #ddd;
+    border-radius:14px;
+    white-space:pre-wrap;
+    font-family:monospace;
+    display:none;
+}
+
+.price-input{
+    width:120px;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #ccc;
+    font-size:16px;
+    text-align:right;
+}
+
+.add-service{
+    margin-top:30px;
+    padding-top:20px;
+    border-top:2px dashed #ddd;
+}
+
+.add-service input{
+    width:100%;
+    padding:14px;
+    margin-bottom:12px;
+    border-radius:12px;
+    border:1px solid #ccc;
+    font-size:16px;
+}
+
+.footer{
+    text-align:center;
+    color:#6b7280;
+    font-size:13px;
+    margin-top:10px;
+}
+
+@media(max-width:700px){
+
+    .task{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Wedding Coordination Planner</h1>
+    <p>Custom Day-Of Coordination Packages</p>
+</div>
+
+<div class="container">
+
+    <!-- HOME PAGE -->
+    <div id="homePage">
+
+        <div class="card">
+
+            <div class="section-title">
+                Coordination Services Checklist
+            </div>
+
+            <div id="checklist"></div>
+
+            <div class="total-box">
+                <h2>Total Package Price</h2>
+                <div class="total">$<span id="total">0.00</span></div>
+            </div>
+
+            <div class="button-group">
+
+                <button class="primary" onclick="exportInvoice()">
+                    Export Invoice
+                </button>
+
+                <button class="secondary" onclick="openPricingPage()">
+                    Edit Pricing
+                </button>
+
+            </div>
+
+            <div id="invoiceOutput" class="invoice"></div>
+
+        </div>
+
+    </div>
+
+    <!-- PRICING PAGE -->
+    <div id="pricingPage" class="hidden">
+
+        <div class="card">
+
+            <div class="section-title">
+                Edit Pricing
+            </div>
+
+            <div id="pricingList"></div>
+
+            <div class="add-service">
+
+                <h3>Add New Service</h3>
+
+                <input 
+                    type="text"
+                    id="newServiceName"
+                    placeholder="Service Name"
+                >
+
+                <input 
+                    type="number"
+                    id="newServicePrice"
+                    placeholder="Service Price"
+                >
+
+                <button class="success" onclick="addService()">
+                    Add Service
+                </button>
+
+            </div>
+
+            <div class="button-group">
+
+                <button class="success" onclick="savePricing()">
+                    Save Pricing
+                </button>
+
+                <button class="secondary" onclick="goHome()">
+                    Back To Home
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+        Wedding Day Coordination System
+    </div>
+
+</div>
+
+<script>
+
+let services = JSON.parse(localStorage.getItem("services"));
+
+if(!services){
+
+services = [
+
+{
+name:"Vendor Arrival Coordination",
+price:250
+},
+
+{
+name:"Ceremony Setup Oversight",
+price:200
+},
+
+{
+name:"Reception Setup Oversight",
+price:300
+},
+
+{
+name:"Wedding Timeline Management",
+price:350
+},
+
+{
+name:"Bridal Party Coordination",
+price:225
+},
+
+{
+name:"Guest Assistance & Seating",
+price:175
+},
+
+{
+name:"Ceremony Cueing",
+price:150
+},
+
+{
+name:"Decor Placement Assistance",
+price:250
+},
+
+{
+name:"Vendor Payment Distribution",
+price:100
+},
+
+{
+name:"Emergency Kit & Problem Solving",
+price:125
+},
+
+{
+name:"Reception Flow Management",
+price:275
+},
+
+{
+name:"End Of Night Cleanup Coordination",
+price:200
+}
+
+];
+
+saveServices();
+
+}
+
+function saveServices(){
+
+localStorage.setItem(
+    "services",
+    JSON.stringify(services)
+);
+
+}
+
+function renderChecklist(){
+
+const checklist = document.getElementById("checklist");
+
+checklist.innerHTML = "";
+
+services.forEach((service,index)=>{
+
+const row = document.createElement("div");
+
+row.className = "task";
+
+row.innerHTML = `
+
+<div class="task-left">
+
+<input 
+type="checkbox"
+class="service-check"
+data-index="${index}"
+>
+
+<div class="task-name">
+${service.name}
+</div>
+
+</div>
+
+<div class="task-price">
+$${service.price}
+</div>
+
+`;
+
+checklist.appendChild(row);
+
+});
+
+document.querySelectorAll(".service-check")
+.forEach(box=>{
+
+box.addEventListener("change",calculateTotal);
+
+});
+
+calculateTotal();
+
+}
+
+function calculateTotal(){
+
+let total = 0;
+
+document.querySelectorAll(".service-check")
+.forEach(box=>{
+
+if(box.checked){
+
+const index = box.dataset.index;
+
+total += Number(services[index].price);
+
+}
+
+});
+
+document.getElementById("total")
+.innerText = total.toFixed(2);
+
+}
+
+function exportInvoice(){
+
+let invoice = "WEDDING DAY COORDINATION INVOICE\n\n";
+
+let total = 0;
+
+document.querySelectorAll(".service-check")
+.forEach(box=>{
+
+if(box.checked){
+
+const index = box.dataset.index;
+
+invoice += `${services[index].name} - $${services[index].price}\n`;
+
+total += Number(services[index].price);
+
+}
+
+});
+
+invoice += "\n--------------------------------";
+invoice += `\nTOTAL: $${total.toFixed(2)}`;
+
+const output = document.getElementById("invoiceOutput");
+
+output.style.display = "block";
+
+output.innerText = invoice;
+
+navigator.clipboard.writeText(invoice);
+
+alert("Invoice copied to clipboard.");
+
+}
+
+function openPricingPage(){
+
+document.getElementById("homePage")
+.classList.add("hidden");
+
+document.getElementById("pricingPage")
+.classList.remove("hidden");
+
+renderPricing();
+
+}
+
+function goHome(){
+
+document.getElementById("pricingPage")
+.classList.add("hidden");
+
+document.getElementById("homePage")
+.classList.remove("hidden");
+
+renderChecklist();
+
+}
+
+function renderPricing(){
+
+const pricingList = document.getElementById("pricingList");
+
+pricingList.innerHTML = "";
+
+services.forEach((service,index)=>{
+
+const row = document.createElement("div");
+
+row.className = "task";
+
+row.innerHTML = `
+
+<div class="task-name">
+${service.name}
+</div>
+
+<input
+type="number"
+class="price-input"
+id="price-${index}"
+value="${service.price}"
+>
+
+`;
+
+pricingList.appendChild(row);
+
+});
+
+}
+
+function savePricing(){
+
+services.forEach((service,index)=>{
+
+service.price = Number(
+document.getElementById(`price-${index}`).value
+);
+
+});
+
+saveServices();
+
+alert("Pricing Saved");
+
+goHome();
+
+}
+
+function addService(){
+
+const name = document.getElementById("newServiceName").value;
+
+const price = document.getElementById("newServicePrice").value;
+
+if(name === "" || price === ""){
+
+alert("Please fill out both fields.");
+
+return;
+
+}
+
+services.push({
+
+name:name,
+price:Number(price)
+
+});
+
+saveServices();
+
+document.getElementById("newServiceName").value = "";
+document.getElementById("newServicePrice").value = "";
+
+renderPricing();
+
+alert("Service Added");
+
+}
+
+renderChecklist();
+
+</script>
+
+</body>
+</html>
