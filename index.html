@@ -60,7 +60,7 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:16px 0;
+    padding:18px 0;
     border-bottom:1px solid #e5e7eb;
 }
 
@@ -82,6 +82,7 @@ body{
 .task-name{
     font-size:17px;
     font-weight:500;
+    line-height:1.4;
 }
 
 .task-price{
@@ -126,6 +127,11 @@ button{
     font-size:16px;
     font-weight:700;
     cursor:pointer;
+    transition:0.2s;
+}
+
+button:hover{
+    transform:translateY(-1px);
 }
 
 .primary{
@@ -159,25 +165,32 @@ button{
 
 .price-input{
     width:120px;
-    padding:10px;
-    border-radius:10px;
-    border:1px solid #ccc;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid #d1d5db;
+    background:white;
     font-size:16px;
+    font-weight:600;
     text-align:right;
 }
 
 .add-service{
     margin-top:30px;
-    padding-top:20px;
+    padding-top:25px;
     border-top:2px dashed #ddd;
+}
+
+.add-service h3{
+    margin-top:0;
+    margin-bottom:16px;
 }
 
 .add-service input{
     width:100%;
     padding:14px;
-    margin-bottom:12px;
+    margin-bottom:14px;
     border-radius:12px;
-    border:1px solid #ccc;
+    border:1px solid #d1d5db;
     font-size:16px;
 }
 
@@ -188,12 +201,62 @@ button{
     margin-top:10px;
 }
 
+.pricing-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 0;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.pricing-left{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.pricing-name{
+    font-size:17px;
+    font-weight:500;
+    line-height:1.4;
+}
+
+.delete-btn{
+    width:22px;
+    height:22px;
+    border:none;
+    background:none;
+    color:#dc2626;
+    font-size:22px;
+    font-weight:700;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+    line-height:1;
+    flex-shrink:0;
+}
+
+.delete-btn:hover{
+    background:#fecaca;
+}
+
 @media(max-width:700px){
 
-    .task{
+    .task,
+    .pricing-row{
         flex-direction:column;
         align-items:flex-start;
-        gap:10px;
+        gap:12px;
+    }
+
+    .price-input{
+        width:100%;
+    }
+
+    button{
+        width:100%;
     }
 
 }
@@ -301,298 +364,272 @@ button{
 
 <script>
 
-let services = JSON.parse(localStorage.getItem("services"));
+let services = [
 
-if(!services){
-
-services = [
-
-{
-name:"Vendor Arrival Coordination",
-price:250
-},
-
-{
-name:"Ceremony Setup Oversight",
-price:200
-},
-
-{
-name:"Reception Setup Oversight",
-price:300
-},
-
-{
-name:"Wedding Timeline Management",
-price:350
-},
-
-{
-name:"Bridal Party Coordination",
-price:225
-},
-
-{
-name:"Guest Assistance & Seating",
-price:175
-},
-
-{
-name:"Ceremony Cueing",
-price:150
-},
-
-{
-name:"Decor Placement Assistance",
-price:250
-},
-
-{
-name:"Vendor Payment Distribution",
-price:100
-},
-
-{
-name:"Emergency Kit & Problem Solving",
-price:125
-},
-
-{
-name:"Reception Flow Management",
-price:275
-},
-
-{
-name:"End Of Night Cleanup Coordination",
-price:200
-}
+    {name:"Vendor Arrival Coordination", price:250},
+    {name:"Ceremony Setup Oversight", price:200},
+    {name:"Reception Setup Oversight", price:300},
+    {name:"Wedding Timeline Management", price:350},
+    {name:"Bridal Party Coordination", price:225},
+    {name:"Guest Assistance & Seating", price:175},
+    {name:"Ceremony Cueing", price:150},
+    {name:"Decor Placement Assistance", price:250},
+    {name:"Vendor Payment Distribution", price:100},
+    {name:"Emergency Kit & Problem Solving", price:125},
+    {name:"Reception Flow Management", price:275},
+    {name:"End Of Night Cleanup Coordination", price:200}
 
 ];
 
-saveServices();
-
-}
-
-function saveServices(){
-
-localStorage.setItem(
-    "services",
-    JSON.stringify(services)
-);
-
-}
-
 function renderChecklist(){
 
-const checklist = document.getElementById("checklist");
+    const checklist = document.getElementById("checklist");
 
-checklist.innerHTML = "";
+    checklist.innerHTML = "";
 
-services.forEach((service,index)=>{
+    services.forEach((service,index)=>{
 
-const row = document.createElement("div");
+        const row = document.createElement("div");
 
-row.className = "task";
+        row.className = "task";
 
-row.innerHTML = `
+        row.innerHTML = `
 
-<div class="task-left">
+            <div class="task-left">
 
-<input 
-type="checkbox"
-class="service-check"
-data-index="${index}"
->
+                <input 
+                    type="checkbox"
+                    class="service-check"
+                    data-index="${index}"
+                >
 
-<div class="task-name">
-${service.name}
-</div>
+                <div class="task-name">
+                    ${service.name}
+                </div>
 
-</div>
+            </div>
 
-<div class="task-price">
-$${service.price}
-</div>
+            <div class="task-price">
+                $${service.price}
+            </div>
 
-`;
+        `;
 
-checklist.appendChild(row);
+        checklist.appendChild(row);
 
-});
+    });
 
-document.querySelectorAll(".service-check")
-.forEach(box=>{
+    document.querySelectorAll(".service-check")
+    .forEach(box=>{
 
-box.addEventListener("change",calculateTotal);
+        box.addEventListener("change",calculateTotal);
 
-});
+    });
 
-calculateTotal();
+    calculateTotal();
 
 }
 
 function calculateTotal(){
 
-let total = 0;
+    let total = 0;
 
-document.querySelectorAll(".service-check")
-.forEach(box=>{
+    document.querySelectorAll(".service-check")
+    .forEach(box=>{
 
-if(box.checked){
+        if(box.checked){
 
-const index = box.dataset.index;
+            const index = box.dataset.index;
 
-total += Number(services[index].price);
+            total += Number(services[index].price);
 
-}
+        }
 
-});
+    });
 
-document.getElementById("total")
-.innerText = total.toFixed(2);
+    document.getElementById("total")
+    .innerText = total.toFixed(2);
 
 }
 
 function exportInvoice(){
 
-let invoice = "WEDDING DAY COORDINATION INVOICE\n\n";
+    let invoice = "";
 
-let total = 0;
+    invoice += "Marks the Day – Event Planning\n";
+    invoice += "Wedding Coordination Package Invoice\n";
+    invoice += "----------------------------------------\n";
+    invoice += `Date: ${new Date().toLocaleDateString()}\n\n`;
 
-document.querySelectorAll(".service-check")
-.forEach(box=>{
+    let total = 0;
 
-if(box.checked){
+    document.querySelectorAll(".service-check")
+    .forEach(box=>{
 
-const index = box.dataset.index;
+        if(box.checked){
 
-invoice += `${services[index].name} - $${services[index].price}\n`;
+            const index = box.dataset.index;
 
-total += Number(services[index].price);
+            invoice += `• ${services[index].name} — $${services[index].price}\n`;
 
-}
+            total += Number(services[index].price);
 
-});
+        }
 
-invoice += "\n--------------------------------";
-invoice += `\nTOTAL: $${total.toFixed(2)}`;
+    });
 
-const output = document.getElementById("invoiceOutput");
+    invoice += "\n----------------------------------------\n";
+    invoice += `TOTAL DUE: $${total.toFixed(2)}\n`;
+    invoice += "----------------------------------------\n\n";
+    invoice += "Thank you for choosing Marks the Day – Event Planning.\n";
+    invoice += "We look forward to making your day unforgettable.\n";
 
-output.style.display = "block";
+    const output = document.getElementById("invoiceOutput");
 
-output.innerText = invoice;
+    output.style.display = "block";
 
-navigator.clipboard.writeText(invoice);
+    output.innerText = invoice;
 
-alert("Invoice copied to clipboard.");
+    if(navigator.clipboard && navigator.clipboard.writeText){
+
+        navigator.clipboard.writeText(invoice);
+
+        alert("Professional invoice copied to clipboard.");
+
+    }else{
+
+        alert("Invoice generated below.");
+
+    }
 
 }
 
 function openPricingPage(){
 
-document.getElementById("homePage")
-.classList.add("hidden");
+    document.getElementById("homePage")
+    .classList.add("hidden");
 
-document.getElementById("pricingPage")
-.classList.remove("hidden");
+    document.getElementById("pricingPage")
+    .classList.remove("hidden");
 
-renderPricing();
+    renderPricing();
 
 }
 
 function goHome(){
 
-document.getElementById("pricingPage")
-.classList.add("hidden");
+    document.getElementById("pricingPage")
+    .classList.add("hidden");
 
-document.getElementById("homePage")
-.classList.remove("hidden");
+    document.getElementById("homePage")
+    .classList.remove("hidden");
 
-renderChecklist();
+    renderChecklist();
 
 }
 
 function renderPricing(){
 
-const pricingList = document.getElementById("pricingList");
+    const pricingList = document.getElementById("pricingList");
 
-pricingList.innerHTML = "";
+    pricingList.innerHTML = "";
 
-services.forEach((service,index)=>{
+    services.forEach((service,index)=>{
 
-const row = document.createElement("div");
+        const row = document.createElement("div");
 
-row.className = "task";
+        row.className = "pricing-row";
 
-row.innerHTML = `
+        row.innerHTML = `
 
-<div class="task-name">
-${service.name}
-</div>
+    <div class="pricing-left">
 
-<input
-type="number"
-class="price-input"
-id="price-${index}"
-value="${service.price}"
->
+        <button 
+            onclick="deleteService(${index})"
+            class="delete-btn"
+            title="Remove Service"
+        >
+            ×
+        </button>
+
+        <div class="pricing-name">
+            ${service.name}
+        </div>
+
+    </div>
+
+    <input
+        type="number"
+        class="price-input"
+        id="price-${index}"
+        value="${service.price}"
+    >
 
 `;
 
-pricingList.appendChild(row);
+        pricingList.appendChild(row);
 
-});
+    });
+
+}
+
+function deleteService(index){
+
+    if(!confirm("Delete this service?")) return;
+
+    services.splice(index,1);
+
+    renderPricing();
 
 }
 
 function savePricing(){
 
-services.forEach((service,index)=>{
+    services.forEach((service,index)=>{
 
-service.price = Number(
-document.getElementById(`price-${index}`).value
-);
+        const input = document.getElementById(`price-${index}`);
 
-});
+        if(input){
 
-saveServices();
+            service.price = Number(input.value);
 
-alert("Pricing Saved");
+        }
 
-goHome();
+    });
+
+    alert("Pricing Saved");
+
+    goHome();
 
 }
 
 function addService(){
 
-const name = document.getElementById("newServiceName").value;
+    const name = document.getElementById("newServiceName").value;
 
-const price = document.getElementById("newServicePrice").value;
+    const price = document.getElementById("newServicePrice").value;
 
-if(name === "" || price === ""){
+    if(name === "" || price === ""){
 
-alert("Please fill out both fields.");
+        alert("Please fill out both fields.");
 
-return;
+        return;
 
-}
+    }
 
-services.push({
+    services.push({
 
-name:name,
-price:Number(price)
+        name:name,
+        price:Number(price)
 
-});
+    });
 
-saveServices();
+    document.getElementById("newServiceName").value = "";
+    document.getElementById("newServicePrice").value = "";
 
-document.getElementById("newServiceName").value = "";
-document.getElementById("newServicePrice").value = "";
+    renderPricing();
 
-renderPricing();
-
-alert("Service Added");
+    alert("Service Added");
 
 }
 
